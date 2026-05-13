@@ -93,3 +93,13 @@ CREATE TABLE transporte_venda (
     FOREIGN KEY (venda_id)
         REFERENCES venda(id)
 );
+
+
+
+CREATE TABLE funcionario_especial (
+    vendedor_id INTEGER PRIMARY KEY,
+    bonus DECIMAL(10,2),
+
+    FOREIGN KEY (vendedor_id)
+        REFERENCES vendedor(id)
+);

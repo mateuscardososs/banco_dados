@@ -23,6 +23,9 @@ INSERT INTO transportadora (nome, cidade) VALUES
 ('Ifood', 'Olinda');
 
 
+
+
+
 INSERT INTO produto
 (nome, descricao, qtd_estoque, valor, categoria, img, obs, vendedor_id)
 VALUES
@@ -99,6 +102,9 @@ VALUES
 'Burger premium',
 3);
 
+
+
+
 INSERT INTO cliente (nome, idade, sexo, data_nascimento)
 SELECT
     'Cliente ' || gs,
@@ -108,6 +114,9 @@ SELECT
 FROM generate_series(4, 100) AS gs;
 
 select * from cliente;
+
+
+
 
 
 INSERT INTO produto
@@ -125,6 +134,10 @@ VALUES
 ('Refrigerante 1L', 'Refrigerante garrafa 1 litro', 40, 12.00, 'Bebida', 'refrigerante_1l.png', 'Ideal para combos', 2),
 ('Milkshake Chocolate', 'Milkshake sabor chocolate 400ml', 25, 18.00, 'Sobremesa', 'milkshake_chocolate.png', 'Gelado e cremoso', 3),
 ('Brownie Explode', 'Brownie artesanal com calda de chocolate', 20, 15.00, 'Sobremesa', 'brownie_explode.png', 'Sobremesa da casa', 4);
+
+
+
+
 
 INSERT INTO venda
 (cliente_id, transportadora_id, valor_total, status_pedido, metodo_pagamento)
@@ -160,3 +173,11 @@ VALUES
 (3, 'Rua C, Boa Viagem', 10.00),
 (4, 'Rua D, Pina', 7.00),
 (5, 'Rua E, Casa Forte', 12.00);
+
+
+
+
+INSERT INTO venda
+(cliente_id, transportadora_id, valor_total, status_pedido, metodo_pagamento)
+VALUES
+(1, 1, 600.00, 'Entregue', 'Pix');
