@@ -1,6 +1,6 @@
 CREATE TABLE cliente (
     id SERIAL PRIMARY KEY,
-    nome VARCHAR(100) NOT NULL,
+    nome VARCHAR(100),
     idade INT,
     sexo CHAR(1),
     data_nascimento DATE
@@ -12,7 +12,6 @@ CREATE TABLE cliente_especial (
 
     FOREIGN KEY (cliente_id)
         REFERENCES cliente(id)
-        ON DELETE CASCADE
 );
 
 CREATE TABLE cargo (
@@ -29,8 +28,7 @@ CREATE TABLE vendedor (
     nota_media DECIMAL(10,2),
     cargo_id INTEGER,
 
-    CONSTRAINT fk_vendedor_cargo
-        FOREIGN KEY (cargo_id)
+    FOREIGN KEY (cargo_id)
         REFERENCES cargo(id)
 );
 
@@ -40,54 +38,58 @@ CREATE TABLE produto (
     descricao VARCHAR(255),
     qtd_estoque INT,
     valor DECIMAL(10,2),
-    obs VARCHAR(255),
+    categoria VARCHAR(100),
+    img VARCHAR(100),
+    obs VARCHAR(100),
     vendedor_id INTEGER,
 
-    CONSTRAINT fk_produto_vendedor
-        FOREIGN KEY (vendedor_id)
+    FOREIGN KEY (vendedor_id)
         REFERENCES vendedor(id)
 );
 
-
-create table transportadora (
-id serial primary key, 
-nome varchar(100),
-cidade varchar(100)
+CREATE TABLE transportadora (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(100),
+    cidade VARCHAR(100)
 );
 
-create table venda (
-id serial primary key,
-cliente_id integer,
-transportadora_id integer,
-data_venda timestamp default current_timestamp,
+CREATE TABLE venda (
+    id SERIAL PRIMARY KEY,
+    cliente_id INTEGER,
+    transportadora_id INTEGER,
+    data_venda TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    valor_total DECIMAL(10,2),
+    status_pedido VARCHAR(100),
+    metodo_pagamento VARCHAR(100),
 
-constraint fk_venda_cliente
-foreign key (cliente_id) references cliente(id),
+    FOREIGN KEY (cliente_id)
+        REFERENCES cliente(id),
 
-constraint fk_transporte_venda
-foreign key (transportadora_id) references transportadora(id)
+    FOREIGN KEY (transportadora_id)
+        REFERENCES transportadora(id)
+);
 
-)
+CREATE TABLE itens_venda (
+    id SERIAL PRIMARY KEY,
+    venda_id INTEGER,
+    produto_id INTEGER,
+    qtd INT,
+    valor_unitario DECIMAL(10,2),
+    subtotal DECIMAL(10,2),
 
-create table produto_venda (
-id serial primary key,
-id_venda integer,
-id_produto integer,
-qtd int,
+    FOREIGN KEY (venda_id)
+        REFERENCES venda(id),
 
-constraint fk_venda
-foreign key (id_venda) references venda(id),
+    FOREIGN KEY (produto_id)
+        REFERENCES produto(id)
+);
 
-constraint fk_produto
-foreign key (id_produto) references produto(id)
-)
+CREATE TABLE transporte_venda (
+    id SERIAL PRIMARY KEY,
+    venda_id INTEGER,
+    endereco VARCHAR(100),
+    valor_frete DECIMAL(10,2),
 
-create table transpote_venda (
-id serial primary key,
-id_venda integer,
-destino varchar (100),
-frete decimal(10,2), 
-
-constraint fk_venda
-foreign key (id_venda) references venda(id)
-)
+    FOREIGN KEY (venda_id)
+        REFERENCES venda(id)
+);
