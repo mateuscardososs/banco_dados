@@ -181,3 +181,12 @@ INSERT INTO venda
 (cliente_id, transportadora_id, valor_total, status_pedido, metodo_pagamento)
 VALUES
 (1, 1, 600.00, 'Entregue', 'Pix');
+
+
+INSERT INTO itens_venda
+(venda_id, produto_id, qtd, valor_unitario, subtotal)
+VALUES
+(1, 1, 10, 32.00, 320.00),
+(1, 1, 10, 32.00, 320.00),
+(1, 1, 10, 32.00, 320.00),
+(1, 1, 10, 32.00, 320.00);
