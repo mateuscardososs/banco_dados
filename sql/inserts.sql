@@ -190,3 +190,11 @@ VALUES
 (1, 1, 10, 32.00, 320.00),
 (1, 1, 10, 32.00, 320.00),
 (1, 1, 10, 32.00, 320.00);
+
+
+
+update cliente_especial
+set cashback = 0
+where cliente_id = 1;
+
+select * from cliente_especial;

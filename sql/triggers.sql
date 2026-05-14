@@ -22,12 +22,7 @@ end if;
 return new;
 
 end;
-
-
 $$ LANGUAGE plpgsql;
-
-
-
 
 CREATE TRIGGER trigger_cliente_especial
 AFTER INSERT ON venda
@@ -38,6 +33,8 @@ INSERT INTO venda
 (cliente_id, transportadora_id, valor_total, status_pedido, metodo_pagamento)
 VALUES
 (1, 1, 600.00, 'Entregue', 'Pix');
+
+
 
 
 
@@ -91,8 +88,35 @@ $$ language plpgsql;
 
 
 
-
 create trigger trg_funcionario_especial
 after insert on itens_venda
 for each row
 execute function calculo_funcionario_especial();
+
+
+
+
+
+
+create function remover_cliente_especial_sem_cashback()
+returns trigger as
+$$
+begin
+
+    if new.cashback <= 0 then
+        delete from cliente_especial
+        where cliente_id = new.cliente_id;
+
+        raise notice 'cliente % removido de cliente especial por cashback zerado.', new.cliente_id;
+    end if;
+
+    return new;
+
+end;
+$$ language plpgsql;
+
+
+create trigger remover_cliente_especial
+after update on cliente_especial
+for each row
+execute function remover_cliente_especial_sem_cashback();
