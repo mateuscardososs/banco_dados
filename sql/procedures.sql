@@ -67,3 +67,83 @@ end;
 $$;
 
 call sorteio_cliente();
+
+
+create or replace procedure realizar_venda(     
+    p_venda_id integer,
+    p_produto_id integer,
+    p_quantidade integer,
+    p_valor_unitario decimal
+)
+language plpgsql
+as
+$$
+declare
+    subtotal_calculado decimal(10,2);
+begin
+
+    subtotal_calculado := p_quantidade * p_valor_unitario;
+
+    insert into itens_venda
+    (venda_id, produto_id, qtd, valor_unitario, subtotal)
+    values
+    (p_venda_id, p_produto_id, p_quantidade, p_valor_unitario, subtotal_calculado);
+
+    update produto
+    set qtd_estoque = qtd_estoque - p_quantidade
+    where id = p_produto_id;
+
+    raise notice
+    'venda realizada e estoque atualizado.';
+
+end;
+$$;
+
+
+
+
+create or replace procedure estatisticas_vendas() 
+language plpgsql
+as
+$$
+declare
+    produto_mais varchar(100);
+    vendedor_mais varchar(100);
+    qtd_mais int;
+    valor_mais decimal(10,2);
+
+    produto_menos varchar(100);
+    qtd_menos int;
+    valor_menos decimal(10,2);
+begin
+
+    select p.nome, v.nome, sum(iv.qtd), sum(iv.subtotal)
+    into produto_mais, vendedor_mais, qtd_mais, valor_mais
+    from itens_venda iv
+    join produto p on p.id = iv.produto_id
+    join vendedor v on v.id = p.vendedor_id
+    group by p.nome, v.nome
+    order by sum(iv.qtd) desc
+    limit 1;
+
+    select p.nome, sum(iv.qtd), sum(iv.subtotal)
+    into produto_menos, qtd_menos, valor_menos
+    from itens_venda iv
+    join produto p on p.id = iv.produto_id
+    group by p.nome
+    order by sum(iv.qtd) asc
+    limit 1;
+
+    raise notice 'produto mais vendido: %, quantidade: %, valor ganho: r$ %',
+        produto_mais, qtd_mais, valor_mais;
+
+    raise notice 'vendedor associado ao produto mais vendido: %',
+        vendedor_mais;
+
+    raise notice 'produto menos vendido: %, quantidade: %, valor ganho: r$ %',
+        produto_menos, qtd_menos, valor_menos;
+
+end;
+$$;
+
+call estatisticas_vendas();
